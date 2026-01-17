@@ -3,36 +3,33 @@ FROM php:8.4-fpm-alpine
 # Install system dependencies
 RUN apk add --no-cache \
     bash git curl zip unzip \
-    sqlite sqlite-dev \
     libpng-dev libzip-dev oniguruma-dev libxml2-dev \
     nodejs npm \
-    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl
+    $PHPIZE_DEPS
+
+# Install PHP extensions (MySQL only to prevent SQLite fallback)
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+# Copy project files
 COPY . .
 
-# Install PHP deps
-RUN composer install --no-dev --optimize-autoloader || true
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader
 
-# Install npm deps (if exists)
-RUN [ -f package.json ] && npm install || true
+# Build Frontend Assets (Critical for Blade/Vite)
+RUN npm install && npm run build
 
-# Permissions
-# Ensure the directory exists first
-RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache
+# Create necessary directories and set permissions
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache \
+    && chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-# Fix Permissions for everything in one go
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 /var/www/html/storage \
-    && chmod -R 775 /var/www/html/bootstrap/cache
-
-# Specific fix for the Blade view compiler
-RUN chmod -R 775 storage/framework/views
-# Copy entrypoint
+# Copy and prepare entrypoint
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
