@@ -29,7 +29,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- \
     --filename=composer
 
 # PHP upload limits (1000MB)
-COPY docker/php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
+COPY /php/uploads.ini /usr/local/etc/php/conf.d/uploads.ini
 
 WORKDIR /var/www
 
