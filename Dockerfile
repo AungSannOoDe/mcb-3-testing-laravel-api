@@ -22,9 +22,16 @@ RUN composer install --no-dev --optimize-autoloader || true
 RUN [ -f package.json ] && npm install || true
 
 # Permissions
-RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 storage bootstrap/cache
+# Ensure the directory exists first
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache
 
+# Fix Permissions for everything in one go
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
+
+# Specific fix for the Blade view compiler
+RUN chmod -R 775 storage/framework/views
 # Copy entrypoint
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
