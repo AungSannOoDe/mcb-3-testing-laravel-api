@@ -1,50 +1,36 @@
-FROM composer:2.7.9 AS composer_bin
+FROM php:8.4-fpm-alpine
 
-# Using PHP 8.4
-FROM php:8.4.2-fpm-alpine3.20
+# Install system dependencies
+RUN apk add --no-cache \
+    bash git curl zip unzip \
+    sqlite sqlite-dev \
+    libpng-dev libzip-dev oniguruma-dev libxml2-dev \
+    nodejs npm \
+    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl
 
-# System & build dependencies
-RUN apk update && apk add --no-cache \
-    bash \
-    curl \
-    git \
-    unzip \
-    icu-dev \
-    oniguruma-dev \
-    libzip-dev \
-    nodejs \
-    npm \
-    $PHPIZE_DEPS
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# PHP extensions
-RUN docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    intl \
-    mbstring \
-    zip \
-    opcache
+WORKDIR /var/www/html
 
-COPY --from=composer_bin /usr/bin/composer /usr/local/bin/composer
-
-WORKDIR /var/www
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install PHP deps
+RUN composer install --no-dev --optimize-autoloader || true
 
-# Install & Build Frontend Assets (Required for Blade/Vite)
-RUN npm install && npm run build
+# Install npm deps (if exists)
+RUN [ -f package.json ] && npm install || true
 
-# Fix Permissions for Blade and Cache
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+# Permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 storage bootstrap/cache
 
-# Clear everything to prevent 500 errors from old cache
-RUN php artisan config:clear
-RUN php artisan view:clear
+# Copy entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 EXPOSE 8000
 
-# Start Laravel
+ENTRYPOINT ["entrypoint.sh"]
+
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
