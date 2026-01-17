@@ -40,8 +40,10 @@ RUN composer install \
     --optimize-autoloader \
     --no-interaction
 
-RUN chown -R www-data:www-data storage bootstrap/cache
-RUN chmod -R  777 ./storage
-RUN php artisan storage:link
+    RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+    RUN chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+    
+    
+    RUN php artisan config:clear
 EXPOSE 8000
 CMD ["php","artisan","serve","--host=0.0.0.0","--port=8000"]
