@@ -1,16 +1,22 @@
-#!/bin/sh
+#!/bin/bash
+set -e
 
-# Wait for database (optional but helpful)
-sleep 5 
+# Ensure storage directories exist (VERY IMPORTANT FOR VOLUMES)
+mkdir -p \
+  /var/www/html/storage/logs \
+  /var/www/html/storage/app/public \
+  /var/www/html/storage/framework/cache \
+  /var/www/html/storage/framework/sessions \
+  /var/www/html/storage/framework/views
 
-# Clear cache so new .env values are loaded
-php artisan config:clear
-php artisan view:clear
+chown -R www-data:www-data /var/www/html/storage
+chmod -R 775 /var/www/html/storage
 
-# Run migrations
+# Run migrations (safe)
 php artisan migrate --force || true
 
-# Compile assets for Blade (If not done in Dockerfile)
-npm run build || true
+# Create storage link (safe)
+php artisan storage:link || true
 
-exec "$@"
+# Start Laravel server
+php artisan serve --host=0.0.0.0 --port=8000 

@@ -1,40 +1,59 @@
-FROM php:8.4-fpm-alpine
+# Use the official PHP 8.4 FPM image as a base
+FROM php:8.4-fpm
 
-# Install system dependencies
-RUN apk add --no-cache \
-    bash git curl zip unzip \
-    libpng-dev libzip-dev oniguruma-dev libxml2-dev \
-    nodejs npm \
-    $PHPIZE_DEPS
+# 1. Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    unzip \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    supervisor \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions (MySQL only to prevent SQLite fallback)
-RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl
+# 2. Install required PHP extensions
+RUN docker-php-ext-install \
+    pdo_mysql \
+    mbstring \
+    gd \
+    zip \
+    pcntl
 
-# Install Composer
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+# 3. Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# 4. Set PHP upload limits
+RUN echo "upload_max_filesize=1000M" > /usr/local/etc/php/conf.d/uploads.ini \
+ && echo "post_max_size=1000M" >> /usr/local/etc/php/conf.d/uploads.ini
+
+# 5. Set working directory (IMPORTANT)
 WORKDIR /var/www/html
 
-# Copy project files
+# 6. Copy application code
 COPY . .
 
-# Install PHP dependencies
+
+# 8. Install PHP dependencies
 RUN composer install --no-dev --optimize-autoloader
 
-# Build Frontend Assets (Critical for Blade/Vite)
-RUN npm install && npm run build
+# 9. Create storage directories BEFORE supervisor
+RUN mkdir -p storage/logs \
+    storage/app/public \
+    storage/framework/cache \
+    storage/framework/sessions \
+    storage/framework/views \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
 
-# Create necessary directories and set permissions
-RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache \
-    && chown -R www-data:www-data /var/www/html \
-    && chmod -R 775 storage bootstrap/cache
+# 10. Create storage symlink
+RUN php artisan storage:link || true
 
-# Copy and prepare entrypoint
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
+# 11. Expose port (if using php artisan serve)
 EXPOSE 8000
 
-ENTRYPOINT ["entrypoint.sh"]
-
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# 12. Start services
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
