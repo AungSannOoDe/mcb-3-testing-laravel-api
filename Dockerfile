@@ -1,40 +1,43 @@
-FROM ubuntu:latest
+FROM php:8.4-fpm-alpine
 
-RUN apt-get update
-
-RUN apt-get install -y openssl vim curl php8.3 php8.3-cli php8.3-fpm php8.3-mysql php8.3-gd php8.3-xml php8.3-mbstring php8.3-curl php8.3-zip php8.3-gd  php8.3-redis
+# Install system dependencies
+RUN apk add --no-cache \
+    bash git curl zip unzip \
+    sqlite sqlite-dev \
+    libpng-dev libzip-dev oniguruma-dev libxml2-dev \
+    nodejs npm \
+    && docker-php-ext-install pdo_mysql pdo_sqlite mbstring zip exif pcntl
 
 # Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# Example: Set upload_max_filesize for CLI
-RUN sed -i 's/upload_max_filesize = .*/upload_max_filesize = 1000M/' /etc/php/8.3/cli/php.ini
+WORKDIR /var/www/html
 
-# Example: Set post_max_size for CLI
-RUN sed -i 's/post_max_size = .*/post_max_size = 1000M/' /etc/php/8.3/cli/php.ini
-
-# Example: Set upload_max_filesize for FPM (if needed for web requests)
-RUN sed -i 's/upload_max_filesize = .*/upload_max_filesize = 1000M/' /etc/php/8.3/fpm/php.ini
-
-# Example: Set post_max_size for FPM (if needed for web requests)
-RUN sed -i 's/post_max_size = .*/post_max_size = 1000M/' /etc/php/8.3/fpm/php.ini
-
-# Set working directory
-WORKDIR /var/www
-
-# Copy project files
 COPY . .
 
-RUN composer install
+# Install PHP deps
+RUN composer install --no-dev --optimize-autoloader || true
 
-# RUN php artisan key:generate
+# Install npm deps (if exists)
+RUN [ -f package.json ] && npm install || true
 
-# Run migrations and seeding
-# RUN php artisan migrate:fresh --seed
+# Permissions
+# Ensure the directory exists first
+RUN mkdir -p storage/framework/views storage/framework/sessions storage/framework/cache
 
-# RUN chmod -R 777 ./storage
+# Fix Permissions for everything in one go
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 775 /var/www/html/storage \
+    && chmod -R 775 /var/www/html/bootstrap/cache
 
-# RUN php artisan storage:link
+# Specific fix for the Blade view compiler
+RUN chmod -R 775 storage/framework/views
+# Copy entrypoint
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 8000
+
+ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
-EXPOSE 8000
