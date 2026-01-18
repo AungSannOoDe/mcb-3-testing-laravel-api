@@ -7,7 +7,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register.submit') }}">
+                    <form method="POST" action="{{ route('register') }}">
                         @csrf
                         <h2 class="text-center pt-3 pb-5">အချက်အလက်များကိုမှန်ကန်စွာဖြည့်ပါ</h2>
                         <div class="row mb-3">
@@ -72,7 +72,7 @@
                                 <button type="submit" class="submit w-100">
                                     အကောင့်အသစ်ဖန်တီးမည်
                                 </button>
-                                <a href="{{ route('user.login.show') }}" class="back text-center my-2">အကောင့်ဝင်ရန်</a>
+                                <a href="{{ route('user.login') }}" class="back text-center my-2">အကောင့်ဝင်ရန်</a>
                             </div>
                         </div>
                     </form>
