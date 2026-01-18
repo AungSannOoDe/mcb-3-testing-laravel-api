@@ -34,13 +34,14 @@ Route::post('/role', function() {
         return redirect()->route('admin.login');
     }
 })->name('role');
+
 Route::get('/user/register', [RegisterController::class, 'registerForm'])->name('user.register');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->middleware('auth');
 Route::get('/order/add', [OrderController::class, 'orderForm']);
 Route::post('/order/add', [OrderController::class, 'create']);
 Route::get('/user/{id}/orders', [OrderController::class, 'show']);
 Route::get('/orders', [OrderController::class, 'index']);
-Route::get('/products/{id}', [ProductController::class, 'findByCategoryId']);
+
 Route::get('/facts/add', [FactController::class, 'showFactForms']);
 Route::post('/category/add', [CategoryController::class, 'store']);
 Route::post('/product/add', [ProductController::class, 'store']);

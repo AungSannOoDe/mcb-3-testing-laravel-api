@@ -98,5 +98,43 @@
         </div>
     </form>
 </div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const baseUrl = "{{ url('') }}";
+    
+        // 1️⃣ Category → Product AJAX
+        $('#category').on('change', function() {
+            const categoryId = $(this).val();
+            $('#product').html('<option value="">ကုန်အမည်ရွေးပါ</option>');
+    
+            if(categoryId) {
+                $.ajax({
+                    url: baseUrl + '/api/products/' + categoryId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $.each(res, function(_, product) {
+                            $('#product').append('<option value="' + product.name + '">' + product.name + '</option>');
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX Error:', error);
+                    }
+                });
+            }
+        });
+    
+        // 2️⃣ Price Calculation
+        function calculateTotal() {
+            const price = parseFloat($('#price').val().replace(/[^\d.]/g, '')) || 0;
+            const netWeight = parseFloat($('#netweight').val().replace(/[^\d.]/g, '')) || 0;
+            $('#total').val((price * netWeight).toFixed(2));
+        }
+    
+        $('#price, #netweight').on('input', calculateTotal);
+    });
+    </script>
+
 <!--product css and products js-->
 @endsection

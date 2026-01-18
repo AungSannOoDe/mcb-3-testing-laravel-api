@@ -146,7 +146,7 @@ $(document).ready(function() {
 
         if(categoryId) {
             $.ajax({
-                url: baseUrl + '/products/' + categoryId,
+                url: baseUrl + '/api/products/' + categoryId,
                 type: 'GET',
                 dataType: 'json',
                 success: function(res) {
