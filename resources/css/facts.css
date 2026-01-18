@@ -1,0 +1,43 @@
+/* Video as background */
+.bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+    /* behind everything */
+}
+
+/* Overlay to make text/forms readable */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(189, 87, 245, 0.5);
+    z-index: -1;
+    /* above video but below content */
+}
+
+/* Make form container readable */
+.form-container {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+}
+
+p {
+    width: 100%;
+}
+
+button.toggle {
+    width: 100%;
+    max-width: 450px;
+}
+.modal-backdrop{
+    position: relative;
+    z-index: 2;
+}

@@ -1,59 +1,37 @@
-# Use the official PHP 8.4 FPM image as a base
-FROM php:8.4-fpm
+# Use PHP 8.3 FPM Alpine as the base
+FROM php:8.3-fpm-alpine
 
-# 1. Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
+# 1. Install Node.js and NPM from official image
+# Using the "copy" method is faster and cleaner than manual installation
+COPY --from=node:20-alpine /usr/lib /usr/lib
+COPY --from=node:20-alpine /usr/local/share /usr/local/share
+COPY --from=node:20-alpine /usr/local/lib /usr/local/lib
+COPY --from=node:20-alpine /usr/local/bin /usr/local/bin
+
+# 2. Install system dependencies
+RUN apk add --no-cache \
     git \
-    unzip \
+    curl \
     libpng-dev \
-    libonig-dev \
     libxml2-dev \
-    libzip-dev \
-    supervisor \
-    && rm -rf /var/lib/apt/lists/*
-
-# 2. Install required PHP extensions
-RUN docker-php-ext-install \
-    pdo_mysql \
-    mbstring \
-    gd \
     zip \
-    pcntl
+    unzip \
+    oniguruma-dev \
+    libzip-dev
 
-# 3. Install Composer
+# 3. Install PHP extensions
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+
+# 4. Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 4. Set PHP upload limits
-RUN echo "upload_max_filesize=1000M" > /usr/local/etc/php/conf.d/uploads.ini \
- && echo "post_max_size=1000M" >> /usr/local/etc/php/conf.d/uploads.ini
+# Set working directory
+WORKDIR /var/www
 
-# 5. Set working directory (IMPORTANT)
-WORKDIR /var/www/html
+# Copy existing application
+COPY . /var/www
+RUN chown -R www-data:www-data /var/www
 
-# 6. Copy application code
-COPY . .
-
-
-# 8. Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader
-
-# 9. Create storage directories BEFORE supervisor
-RUN mkdir -p storage/logs \
-    storage/app/public \
-    storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
- && chown -R www-data:www-data storage bootstrap/cache \
- && chmod -R 775 storage bootstrap/cache
-
-# 10. Create storage symlink
-RUN php artisan storage:link || true
-
-# 11. Expose port (if using php artisan serve)
-EXPOSE 8000
-
-# 12. Start services
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-CMD ["/entrypoint.sh"]
+# Expose port 9000
+EXPOSE 9000
+CMD ["php-fpm"]

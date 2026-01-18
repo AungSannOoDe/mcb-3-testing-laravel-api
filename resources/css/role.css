@@ -1,0 +1,25 @@
+h2{
+    color: rgb(62, 0, 128);
+}
+.user{
+    border: 1px solid rgb(62, 0, 128);
+    color: rgb(62, 0, 128);
+    cursor: pointer;
+    transition: 0.5s;
+}
+.user:hover{
+    background: rgb(62, 0, 128);
+    color: #fff;
+}
+.user.active{
+   background: rgb(62, 0, 128);
+   color: #fff; 
+}
+.submit{
+    background: rgb(62, 0, 128);
+    color: #fff;
+    padding: 7px 20px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+}

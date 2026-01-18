@@ -1,0 +1,25 @@
+/*.box{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}*/
+.container{
+    color: rgb(62, 0, 128);
+}
+.box .card{
+    transform: rotate(45deg);
+    border: 3px solid rgb(62, 0, 128);
+    box-shadow: inset -5px -5px 3px 3px rgb(154, 76, 238), 
+                inset 5px 5px 3px 3px rgb(154, 76, 238);
+    border-radius: 20px;
+    max-width: 250px;
+}
+.box p, .box ul li{
+    font-size: 1.2em;
+}
+@media(max-width: 578px){
+    .content h2{
+        padding-top: 70px;
+    }
+}

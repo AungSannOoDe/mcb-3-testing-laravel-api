@@ -1,0 +1,29 @@
+.container{
+    color: rgb(62, 0, 128);
+}
+.container label, .container input{
+    color: rgb(62, 0, 128);
+}
+.container h2{
+    color: rgb(62, 0, 128);
+}
+.container .submit{
+    background: rgb(62, 0, 128);
+    color: #fff;
+    border: none;
+    outline: none;
+    padding: 7px;
+    border-radius: 5px;
+}
+.container .back{
+    display: block;
+    text-decoration: none;
+    border: 1.5px solid rgb(62, 0, 128);
+    color: rgb(62, 0, 128);
+    padding: 7px;
+    border-radius: 5px;
+}
+.container .back:hover{
+   background: rgb(62, 0, 128);
+    color: #fff; 
+}

@@ -1,0 +1,43 @@
+.order-card {
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+    background: #f8f9fa;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 12px 12px 0 0;
+}
+
+.order-status {
+    display: inline-block;
+    padding: 0.35em 0.65em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: 0.375rem; /* rounded */
+    color: #fff; /* text always white */
+}
+
+.status-shipping {
+    background-color: #ffc107; /* Bootstrap warning */
+}
+
+.status-reached {
+    background-color: #28a745; /* Bootstrap success */
+}
+
+.status-sold {
+    background-color: #007bff; /* Bootstrap primary */
+}
+.table tr th, .table tr td{
+    color: rgb(62, 0, 128);
+}
