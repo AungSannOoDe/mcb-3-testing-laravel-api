@@ -7,12 +7,11 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <form method="POST" action="{{ route('register') }}">
+                    <form method="POST" action="{{ route('register.submit') }}">
                         @csrf
                         <h2 class="text-center pt-3 pb-5">အချက်အလက်များကိုမှန်ကန်စွာဖြည့်ပါ</h2>
                         <div class="row mb-3">
                             <label for="name" class="col-md-4 col-form-label text-md-end">အမည်</label>
-
                             <div class="col-md-6">
                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 
@@ -73,7 +72,7 @@
                                 <button type="submit" class="submit w-100">
                                     အကောင့်အသစ်ဖန်တီးမည်
                                 </button>
-                                <a href="{{ route('user.login') }}" class="back text-center my-2">အကောင့်ဝင်ရန်</a>
+                                <a href="{{ route('user.login.show') }}" class="back text-center my-2">အကောင့်ဝင်ရန်</a>
                             </div>
                         </div>
                     </form>
