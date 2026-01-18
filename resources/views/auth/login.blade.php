@@ -13,7 +13,7 @@ User Login Form
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
             @endsession
-            <form method="POST" action="{{ route('login.submit') }}" class="shadow-lg p-5 rounded-3">
+            <form method="POST" action="{{ route('login') }}" class="shadow-lg p-5 rounded-3">
                 @csrf
                 <h2 class="text-center">အသုံးပြုသူ အကောင့်ဝင်ရန်</h2>
                 <div class="form-group mb-3">
