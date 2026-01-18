@@ -44,11 +44,11 @@ User Login Form
                 <button type="submit" class="submit w-100">အကောင့်ဝင်ရန်</button>
                 <a href="{{ url('/role') }}" class="back text-center my-2">နောက်သို့</a>
                 <p class="text-center">
-                    <a href="{{ route('user.forgot-password.show') }}">စကားဝှက်မေ့နေသလား?</a>
+                    <a href="{{ route('user.forgot-password') }}">စကားဝှက်မေ့နေသလား?</a>
                 </p>
                 <p class="text-center">
                     အကောင့်မရှိဘူးလား?
-                    <a href="{{ route('user.register.show') }}">မှတ်ပုံတင်ပါ</a>
+                    <a href="{{ route('user.register') }}">မှတ်ပုံတင်ပါ</a>
                 </p>
             </form>
         </div>
