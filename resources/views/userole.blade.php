@@ -5,7 +5,7 @@
 @endsection
 @section('content')
     <div class="container w-100 m-auto my-5 shadow-lg rounded-2" style="max-width:700px;">
-        <form action="{{ route('role') }}" method="post" class="p-3 text-center">
+        <form action="{{ route('role.submit') }}" method="post" class="p-3 text-center">
             @csrf
 
             <h2 class="text-center py-3">အသုံးပြုသူအဆင့်‌‌သတ်မှတ်ပါ</h2>
