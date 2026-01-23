@@ -34,89 +34,70 @@
 
             {{-- Navigation --}}
             <nav class="hidden md:flex">
-                <ul class="flex items-center gap-8 font-medium text-slate-600">
-
+                <ul class="flex items-center gap-6 font-medium text-slate-600">
                     @auth
-                        {{-- Role 1 --}}
                         @if(auth()->user()->role_id == 1)
-                            <li>
-                                <a href="{{ url('/order/add') }}" class="hover:text-indigo-600 transition">
-                                    တင်ပို့ကုန်ထည့်သွင်းရန်
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('/user/'.auth()->user()->id.'/orders') }}" class="hover:text-indigo-600 transition">
-                                    အချက်လက်ကြည့်ရန်
-                                </a>
-                            </li>
+                            <li><a href="{{ url('/order/add') }}" class="hover:text-indigo-600 transition">တင်ပို့ကုန်ထည့်သွင်းရန်</a></li>
+                            <li><a href="{{ url('/user/'.auth()->user()->id.'/orders') }}" class="hover:text-indigo-600 transition">အချက်လက်ကြည့်ရန်</a></li>
                         @endif
 
-                        {{-- Role 2 --}}
                         @if(auth()->user()->role_id == 2)
-                            <li>
-                                <a href="{{ url('/orders') }}" class="hover:text-indigo-600 transition">
-                                    ပို့ကုန်စာရင်းကြည့်ရန်
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ url('/facts/add') }}" class="hover:text-indigo-600 transition">
-                                    အချက်လက်ထည့်သွင်းရန်
-                                </a>
-                            </li>
+                            <li><a href="{{ url('/orders') }}" class="hover:text-indigo-600 transition">ပို့ကုန်စာရင်းကြည့်ရန်</a></li>
+                            <li><a href="{{ url('/facts/add') }}" class="hover:text-indigo-600 transition">အချက်လက်ထည့်သွင်းရန်</a></li>
 
-                            {{-- Dropdown --}}
-                            <li class="relative group">
-                                <span class="cursor-pointer hover:text-indigo-600 transition">
+                            {{-- Data Dropdown (Removed Dots/Discs) --}}
+                            <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                <button class="cursor-pointer hover:text-indigo-600 transition flex items-center gap-1 py-4">
                                     အချက်အလက်ကြည့်ရန်
-                                </span>
+                                    <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
 
-                                <ul class="absolute left-0 top-full mt-2 w-56 bg-white shadow-lg rounded-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                                    <li><a href="{{ url('/categories') }}" class="block px-4 py-2 hover:bg-indigo-50">ကုန်ပစ္စည်းအမျိုးအစားများ</a></li>
-                                    <li><a href="{{ url('/products') }}" class="block px-4 py-2 hover:bg-indigo-50">ကုန်အမည်များ</a></li>
-                                    <li><a href="{{ url('/sourceareas') }}" class="block px-4 py-2 hover:bg-indigo-50">ပွဲရုံများ</a></li>
-                                    <li><a href="{{ url('/gates') }}" class="block px-4 py-2 hover:bg-indigo-50">တင်ပို့ဂိတ်များ</a></li>
-                                    <li><a href="{{ url('/shops') }}" class="block px-4 py-2 hover:bg-indigo-50">ဆိုင်များ</a></li>
-                                </ul>
+                                {{-- Dropdown Menu --}}
+                                <div x-show="open"
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 translate-y-2"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    class="absolute left-0 top-[85%] w-56 bg-white shadow-2xl rounded-2xl border border-slate-100 py-2 z-[100]"
+                                    style="display: none;">
+
+                                    {{-- No more discs/dots here --}}
+                                    <a href="{{ url('/categories') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ကုန်ပစ္စည်းအမျိုးအစားများ</a>
+                                    <a href="{{ url('/products') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ကုန်အမည်များ</a>
+                                    <a href="{{ url('/sourceareas') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ပွဲရုံများ</a>
+                                    <a href="{{ url('/gates') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">တင်ပို့ဂိတ်များ</a>
+                                    <a href="{{ url('/shops') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ဆိုင်များ</a>
+                                </div>
                             </li>
                         @endif
                     @endauth
-
                 </ul>
             </nav>
 
             {{-- Right Side --}}
             <div class="flex items-center gap-4">
                 @guest
-                    <a href="{{ route('login') }}" class="text-slate-600 font-medium hover:text-indigo-600 transition">
-                        Login
-                    </a>
-                    <a href="{{ route('register') }}"
-                       class="bg-indigo-600 text-white px-5 py-2 rounded-full font-medium hover:bg-indigo-700 transition shadow-lg shadow-indigo-200">
-                        Register
-                    </a>
+                    <a href="{{ route('login') }}" class="text-slate-600 font-medium hover:text-indigo-600 transition">Login</a>
+                    <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-5 py-2 rounded-full font-medium hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Register</a>
                 @else
-                    {{-- User Dropdown --}}
-                    <div class="relative group">
-                        <span class="cursor-pointer font-semibold text-indigo-600">
-                            {{ Auth::user()->name }}
-                        </span>
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl hover:bg-indigo-50 transition">
+                            <span class="font-bold text-indigo-600 text-sm">{{ Auth::user()->name }}</span>
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
+                        </button>
 
-                        <div class="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-lg border opacity-0 invisible group-hover:opacity-100 group-hover:visible transition">
-                            <a href="{{ url('change-password') }}" class="block px-4 py-2 hover:bg-indigo-50">
-                                စကားဝှက်ပြောင်းရန်
-                            </a>
-
+                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-[100]" style="display: none;">
+                            <a href="{{ url('change-password') }}" class="block px-4 py-2 hover:bg-indigo-50 text-slate-600 text-sm">စကားဝှက်ပြောင်းရန်</a>
+                            <hr class="my-1 border-slate-50">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600">
-                                    ထွက်ရန်
-                                </button>
+                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm font-bold">ထွက်ရန်</button>
                             </form>
                         </div>
                     </div>
                 @endguest
             </div>
-
         </header>
         {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">

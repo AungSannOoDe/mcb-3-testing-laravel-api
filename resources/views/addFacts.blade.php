@@ -1,107 +1,138 @@
 @extends('layouts.app')
 @section('title', 'Fact Adding Form')
 @section('content')
+<style>
+    .bg-video {
+        position: fixed;
+        right: 0; bottom: 0;
+        min-width: 100%; min-height: 100%;
+        z-index: -2;
+        object-fit: cover;
+    }
+    .overlay {
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 58, 138, 0.4) 100%);
+        z-index: -1;
+    }
+</style>
 
-<!-- Background video -->
 <video class="bg-video" autoplay muted loop playsinline>
     <source src="{{ asset('images/shipping.mp4') }}" type="video/mp4">
-    Your browser does not support the video tag.
 </video>
-
-<!-- Overlay -->
 <div class="overlay"></div>
 
-<div class="container form-container py-4">
+<div class="max-w-4xl mx-auto px-6 py-12">
+
     @if(session('success') || session('error'))
-    <x-modal>
-        <p class="text-center" style="font-size:2.5em;">
-            @if(session('success'))
-            <i class="fa-solid fa-circle-check text-success"></i>
-            @else
-            <i class="fa-solid fa-triangle-exclamation text-warning"></i>
-            @endif
-        </p>
-        <p class="{{ session('success') ? 'text-success' : 'text-warning' }} text-center" style="font-size:1.2em;">
-            {{ session('success') ?? session('error') }}
-        </p>
-    </x-modal>
-    <!--modal load js-->
+        <div x-data="{ show: true }" x-show="show" class="fixed inset-0 z-[100] flex items-center justify-center px-4">
+            <div class="bg-white/90 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white max-w-sm w-full text-center">
+                <div class="mb-4 text-6xl">
+                    @if(session('success'))
+                        <span class="text-emerald-500">check_circle</span>
+                    @else
+                        <span class="text-amber-500">warning</span>
+                    @endif
+                </div>
+                <p class="text-slate-800 font-bold text-lg mb-6">{{ session('success') ?? session('error') }}</p>
+                <button @click="show = false" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold">Done</button>
+            </div>
+        </div>
     @endif
-    <form action="{{ url('/category/add') }}" class="m-2" method="POST">
-        @csrf
-        <p class="d-inline-flex gap-1">
-            <button class="btn btn-primary toggle" type="button" data-bs-toggle="collapse" data-bs-target="#categoryCollapse" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa-solid fa-plus"></i> ကုန်အမျိုးအစားထည့်ရန် <i class="fa-solid fa-list"></i>
+
+    <div class="mb-10 text-center">
+        <h2 class="text-3xl font-black text-white mb-2">Management Hub</h2>
+        <p class="text-indigo-100/80 italic">အချက်အလက်အသစ်များ ထည့်သွင်းရန်</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" x-data="{ activeForm: null }">
+
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl overflow-hidden transition-all duration-300"
+             :class="activeForm === 'category' ? 'ring-2 ring-indigo-400 scale-[1.02]' : ''">
+            <button @click="activeForm = (activeForm === 'category' ? null : 'category')"
+                    class="w-full flex items-center gap-4 p-6 text-white group">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-500/20 flex items-center justify-center group-hover:bg-indigo-500 transition-colors">
+                    <i class="fa-solid fa-list text-xl"></i>
+                </div>
+                <span class="font-bold text-lg">ကုန်အမျိုးအစားထည့်ရန်</span>
+                <i class="fa-solid fa-chevron-down ml-auto transition-transform" :class="activeForm === 'category' ? 'rotate-180' : ''"></i>
             </button>
-        </p>
-        <div class="collapse" id="categoryCollapse">
-            <div class="card card-body">
-                <input type="text" name="category" class="form-control mb-3" placeholder="ကုန်အမျိုးအစားအသစ်ထည့်ပါ။">
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> သိမ်းရန်</button>
+
+            <div x-show="activeForm === 'category'" x-collapse>
+                <form action="{{ url('/category/add') }}" method="POST" class="p-6 pt-0">
+                    @csrf
+                    <input type="text" name="category" placeholder="ဥပမာ - ငါးခြောက်"
+                           class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder:text-white/40 focus:ring-2 focus:ring-indigo-400 outline-none mb-4">
+                    <button class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-check"></i> သိမ်းရန်
+                    </button>
+                </form>
             </div>
         </div>
-    </form>
-    <form action="{{ url('/product/add') }}" class="m-2" method="POST">
-        @csrf
-        <p class="d-inline-flex gap-1">
-            <button class="btn btn-danger toggle" type="button" data-bs-toggle="collapse" data-bs-target="#productCollapse" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa-solid fa-plus"></i> ကုန်ပစ္စည်းအသစ်ထည့်ရန် <i class="fa-brands fa-product-hunt"></i>
+
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl overflow-hidden transition-all duration-300"
+             :class="activeForm === 'product' ? 'ring-2 ring-rose-400 scale-[1.02]' : ''">
+            <button @click="activeForm = (activeForm === 'product' ? null : 'product')"
+                    class="w-full flex items-center gap-4 p-6 text-white group">
+                <div class="w-12 h-12 rounded-2xl bg-rose-500/20 flex items-center justify-center group-hover:bg-rose-500 transition-colors">
+                    <i class="fa-brands fa-product-hunt text-xl"></i>
+                </div>
+                <span class="font-bold text-lg">ကုန်ပစ္စည်းအသစ်ထည့်ရန်</span>
+                <i class="fa-solid fa-chevron-down ml-auto transition-transform" :class="activeForm === 'product' ? 'rotate-180' : ''"></i>
             </button>
-        </p>
-        <div class="collapse" id="productCollapse">
-            <div class="card card-body">
-                <select name="category_id" class="form-select mb-3">
-                    @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                    @endforeach
-                </select>
-                <input type="text" name="product" class="form-control mb-3" placeholder="ကုန်ပစ္စည်းအသစ်ထည့်ပါ။">
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> သိမ်းရန်</button>
+
+            <div x-show="activeForm === 'product'" x-collapse>
+                <form action="{{ url('/product/add') }}" method="POST" class="p-6 pt-0">
+                    @csrf
+                    <select name="category_id" class="w-full bg-slate-800/80 border border-white/20 rounded-2xl px-4 py-3 text-white mb-3 outline-none">
+                        @foreach($categories as $category)
+                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                    <input type="text" name="product" placeholder="ကုန်ပစ္စည်းအမည်"
+                           class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white placeholder:text-white/40 mb-4">
+                    <button class="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white rounded-2xl font-bold transition-all">
+                        <i class="fa-solid fa-check"></i> သိမ်းရန်
+                    </button>
+                </form>
             </div>
         </div>
-    </form>
-    <form action="{{ url('/sourceArea/add') }}" class="m-2" method="POST">
-        @csrf
-        <p class="d-inline-flex gap-1 mb-3">
-            <button class="btn btn-secondary toggle" type="button" data-bs-toggle="collapse" data-bs-target="#areaCollapse" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa-solid fa-plus"></i> ပွဲရုံအမည်အသစ်ထည့်ရန် <i class="fa-solid fa-building-columns"></i></i>
+
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl overflow-hidden transition-all duration-300">
+            <button @click="activeForm = (activeForm === 'area' ? null : 'area')" class="w-full flex items-center gap-4 p-6 text-white group">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500 transition-colors">
+                    <i class="fa-solid fa-building-columns text-xl"></i>
+                </div>
+                <span class="font-bold text-lg">ပွဲရုံအမည်အသစ်ထည့်ရန်</span>
+                <i class="fa-solid fa-chevron-down ml-auto transition-transform" :class="activeForm === 'area' ? 'rotate-180' : ''"></i>
             </button>
-        </p>
-        <div class="collapse" id="areaCollapse">
-            <div class="card card-body">
-                <input type="text" name="sourceArea" class="form-control mb-3" placeholder="ပွဲရုံအမည်အသစ်ထည့်ပါ။">
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> သိမ်းရန်</button>
+            <div x-show="activeForm === 'area'" x-collapse>
+                <form action="{{ url('/sourceArea/add') }}" method="POST" class="p-6 pt-0">
+                    @csrf
+                    <input type="text" name="sourceArea" placeholder="ပွဲရုံအမည်" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white mb-4">
+                    <button class="w-full py-3 bg-emerald-600 text-white rounded-2xl font-bold">သိမ်းရန်</button>
+                </form>
             </div>
         </div>
-    </form>
-    <form action="{{ url('/gate/add') }}" class="m-2" method="POST">
-        @csrf
-        <p class="d-inline-flex gap-1 mb-3">
-            <button class="btn btn-success toggle" type="button" data-bs-toggle="collapse" data-bs-target="#gateCollapse" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa-solid fa-plus"></i> ဂိတ်အမည်အသစ်ထည့်ရန် <i class="fa-solid fa-bus-simple"></i>
+
+        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl overflow-hidden transition-all duration-300">
+            <button @click="activeForm = (activeForm === 'gate' ? null : 'gate')" class="w-full flex items-center gap-4 p-6 text-white group">
+                <div class="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500 transition-colors">
+                    <i class="fa-solid fa-bus-simple text-xl"></i>
+                </div>
+                <span class="font-bold text-lg">ဂိတ်အမည်အသစ်ထည့်ရန်</span>
+                <i class="fa-solid fa-chevron-down ml-auto transition-transform" :class="activeForm === 'gate' ? 'rotate-180' : ''"></i>
             </button>
-        </p>
-        <div class="collapse" id="gateCollapse">
-            <div class="card card-body">
-                <input type="text" name="gate" class="form-control mb-3" placeholder="ဂိတ်အမည်အသစ်ထည့်ပါ။">
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> သိမ်းရန်</button>
+            <div x-show="activeForm === 'gate'" x-collapse>
+                <form action="{{ url('/gate/add') }}" method="POST" class="p-6 pt-0">
+                    @csrf
+                    <input type="text" name="gate" placeholder="ဂိတ်အမည်" class="w-full bg-white/10 border border-white/20 rounded-2xl px-4 py-3 text-white mb-4">
+                    <button class="w-full py-3 bg-amber-600 text-white rounded-2xl font-bold">သိမ်းရန်</button>
+                </form>
             </div>
         </div>
-    </form>
-    <form action="{{ url('/shop/add') }}" class="m-2" method="POST">
-        @csrf
-        <p class="d-inline-flex gap-1 mb-3">
-            <button class="btn btn-dark toggle" type="button" data-bs-toggle="collapse" data-bs-target="#shopCollapse" aria-expanded="false" aria-controls="collapseExample">
-                <i class="fa-solid fa-plus"></i> လွှဲပြောင်းအမည်ထည့်ရန် <i class="fa-solid fa-shop"></i>
-            </button>
-        </p>
-        <div class="collapse" id="shopCollapse">
-            <div class="card card-body">
-                <input type="text" name="shop" class="form-control mb-3" placeholder="လွှဲပြောင်းအမည်အသစ်ထည့်ပါ။">
-                <button type="submit" class="btn btn-success"><i class="fa-solid fa-check"></i> သိမ်းရန်</button>
-            </div>
-        </div>
-    </form>
+
+    </div>
 </div>
-<!--facts css-->
 @endsection

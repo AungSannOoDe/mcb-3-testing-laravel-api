@@ -1,49 +1,32 @@
-@props(['item','type'])
+@props(['item', 'type'])
 
-<div x-data="{ open: false }">
-    {{-- Trigger button (optional) --}}
-    <button @click="open = true" class="p-2 text-red-500 hover:text-white hover:bg-red-500 rounded transition">
-        <i class="fa-solid fa-trash"></i>
-    </button>
+<div x-show="deleteOpen"
+     class="fixed inset-0 z-[100] overflow-y-auto"
+     style="display: none;">
 
-    {{-- Modal Overlay --}}
-    <div
-        x-show="open"
-        x-transition.opacity
-        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
-    >
-        {{-- Modal Container --}}
-        <div
-            x-show="open"
-            x-transition
-            @click.away="open = false"
-            class="bg-white rounded-xl shadow-xl max-w-md w-full p-6"
-        >
-            <form action="{{ route('facts.delete', $item->id) }}" method="POST" class="space-y-4">
-                @csrf
-                @method('DELETE')
-                <input type="hidden" name="type" value="{{ $type }}">
+    <div x-show="deleteOpen" x-transition @click="deleteOpen = false" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm"></div>
 
-                {{-- Warning Icon --}}
-                <div class="text-center text-warning">
-                    <p class="text-4xl text-yellow-500">
-                        <i class="fa-solid fa-circle-exclamation"></i>
-                    </p>
-                    <p class="text-lg mt-2">
-                        <span class="text-red-600 font-semibold">{{ $item->name ?? 'ဤအချက်လက်' }}</span> ကို အပြီးတိုင် ဖျက်ပစ်တော့မည်။ ဆက်လုပ်မည်လား?
-                    </p>
-                </div>
+    <div class="flex min-h-full items-center justify-center p-4 text-center">
+        <div x-show="deleteOpen" x-transition class="relative w-full max-w-xs bg-white rounded-3xl shadow-2xl p-8">
+            <div class="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
 
-                {{-- Buttons --}}
-                <div class="flex justify-center gap-4 mt-4">
-                    <button type="button" @click="open = false" class="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100 transition">
-                        မဖျက်ပါ
+            <h3 class="text-xl font-black text-slate-800 mb-2">သေချာပါသလား?</h3>
+            <p class="text-slate-500 text-sm mb-6">ဤအချက်အလက်ကို ဖျက်ရန် သေချာပါသလား? ဤလုပ်ဆောင်ချက်ကို ပြန်ပြင်၍မရပါ။</p>
+
+            <div class="flex flex-col gap-2">
+                <form action="{{ url($type.'/delete/'.$item->id) }}" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="w-full py-3 bg-red-500 hover:bg-red-600 text-white rounded-xl font-bold transition shadow-lg shadow-red-100">
+                        အတည်ပြုဖျက်မည်
                     </button>
-                    <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
-                        ဖျက်မည်
-                    </button>
-                </div>
-            </form>
+                </form>
+                <button @click="deleteOpen = false" type="button" class="w-full py-3 text-slate-400 font-bold hover:bg-slate-50 rounded-xl transition">
+                    မဖျက်တော့ပါ
+                </button>
+            </div>
         </div>
     </div>
 </div>
