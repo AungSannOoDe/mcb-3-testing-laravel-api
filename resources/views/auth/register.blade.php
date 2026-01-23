@@ -2,7 +2,119 @@
 
 @section('title', 'User Registration Form')
 @section('content')
-<div class="container">
+ <section class="relative flex flex-col items-center justify-center min-h-screen">
+     {{-- <div class="absolute inset-0 -z-10 h-screen">
+        <img src="{{ asset('images/circle.svg') }}" alt="" class="w-full h-full object-cover">
+    </div> --}}
+
+    <div class="w-full max-w-sm space-y-1 md:space-y-10 md:p-6 p-6">
+        <div class="space-y-3 text-center">
+            <h1 class="text-4xl font-bold text-stone-900">Sign up</h1>
+            <p class="text-stone-500 text-base leading-relaxed">
+                အချက်အလက်များကို မှန်ကန်စွာ ဖြည့်သွင်းပါ
+            </p>
+        </div>
+
+        <form method="POST" action="{{ route('register') }}" class="space-y-6">
+            @csrf
+
+            {{-- Name Field --}}
+            <div>
+                <label class="block text-sm font-medium text-stone-700">Name</label>
+                <input
+                    type="text"
+                    name="name"
+                    value="{{ old('name') }}"
+                    autocomplete="name"
+                    autofocus
+                    class="input-box @error('name') border-red-500 bg-red-50 ring-1 ring-red-500 animate-shake @enderror"
+                    placeholder="Maung Maung"
+                >
+                @error('name')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Phone Field --}}
+            <div>
+                <label class="block text-sm font-medium text-stone-700">ဖုန်းနံပါတ်</label>
+                <input
+                    type="tel"
+                    name="phone"
+                    value="{{ old('phone') }}"
+                    autocomplete="tel"
+                    class="input-box @error('phone') border-red-500 bg-red-50 ring-1 ring-red-500 animate-shake @enderror"
+                    placeholder="09xxxxxxxx"
+                >
+                @error('phone')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Password Field --}}
+            <div>
+                <label class="block text-sm font-medium text-stone-700">စကားဝှက်</label>
+                <input
+                    type="password"
+                    name="password"
+                    autocomplete="password"
+                    class="input-box @error('password') border-red-500 bg-red-50 ring-1 ring-red-500 animate-shake @enderror"
+                    placeholder="******"
+                >
+                @error('password')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Password Confirmation --}}
+            <div>
+                <label class="block text-sm font-medium text-stone-700">စကားဝှက်အတည်ပြုပါ</label>
+                <input
+                    type="password"
+                    name="password_confirmation"
+                    autocomplete="password"
+                    class="input-box @error('password_confirmation') border-red-500 bg-red-50 ring-1 ring-red-500 animate-shake @enderror"
+                    placeholder="*******"
+                >
+                @error('password_confirmation')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
+            </div>
+
+            {{-- Birth Date --}}
+            <div>
+                <label class="block text-sm font-medium text-stone-700">မွေးသက္ကရာဇ်</label>
+                <input
+                    type="date"
+                    name="birth_date"
+                    value="{{ old('birth_date') }}"
+                    class="input-box @error('birth_date') border-red-500 bg-red-50 ring-1 ring-red-500 animate-shake @enderror"
+                >
+                @error('birth_date')
+                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="btn-primary w-full">
+                    အကောင့်အသစ်ဖန်တီးမည်
+                </button>
+            </div>
+        </form>
+
+        <p class="text-center text-stone-500 text-sm">
+            Account ရှိပြီးသားလား?
+            <a href="{{ route('login') }}" class="text-indigo-500 font-bold">
+                Sign in
+            </a>
+        </p>
+    </div>
+
+</section>
+@endsection
+
+
+{{-- <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow-sm">
@@ -80,6 +192,5 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
  <!--login css-->
-@endsection
