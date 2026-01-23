@@ -58,6 +58,16 @@ class RegisterController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'password_confirmation' => 'required|same:password',
             'birth_date'=>'required'
+        ],[
+
+            'name.required' => 'အမည် ထည့်သွင်းရန် လိုအပ်ပါသည်။',
+            'phone.required' => 'ဖုန်းနံပါတ် ထည့်သွင်းရန် လိုအပ်ပါသည်။',
+            'phone.unique' => 'ဤဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ထားပြီးသား ဖြစ်နေပါသည်။',
+            'password.required' => 'စကားဝှက် ထည့်သွင်းရန် လိုအပ်ပါသည်။',
+            'password.min' => 'စကားဝှက်သည် အနည်းဆုံး ၈ လုံး ရှိရပါမည်။',
+            'password_confirmation' => 'စကားဝှက် အတည်ပြုချက် မတူညီပါ။',
+            'birth_date.required' => 'မွေးသက္ကရာဇ် ရွေးချယ်ပေးပါ။',
+            'birth_date.before' => 'မွေးသက္ကရာဇ်သည် မှားယွင်းနေပါသည်။',
         ]);
     }
 
