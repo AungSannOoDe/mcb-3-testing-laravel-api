@@ -5,36 +5,36 @@
 @endsection
 @section('content')
      <section class="root-container">
-
       <div class="space-y-10 md:space-y-16">
-          <h1 class="text-3xl md:text-4xl font-semibold text-center text-stone-800">အသုံးပြုသူအဆင့်‌‌သတ်မှတ်ပါ</h1>
-
+          <h1 class="text-2xl md:text-4xl font-semibold text-center text-stone-800">အသုံးပြုသူအဆင့်‌‌သတ်မှတ်ပါ</h1>
+         <form action="{{ route('role') }}" class=" space-y-7"  method="post" >
           <div class="grid grid-cols-2 gap-6 md:gap-10 max-w-4xl mx-auto w-full">
 
-              <div class="selection-card">
+              <div class="selection-card user admin active:bg-indigo-400 duration-200">
                   <div class="card-icon">
                       <img src="./images/user.svg" alt="Admin" class="h-full">
                   </div>
-                  <h2 class="text-xl font-medium text-center text-stone-700 pt-4">Admin</h2>
+                  <h2 class="text-xl font-medium text-center text-stone-700 pt-4">အက်ဒ်မင်</h2>
               </div>
 
-              <div class="selection-card">
+              <div class="selection-card user exporter active:bg-indigo-400 duration-200">
                   <div class="card-icon">
                       <img src="./images/users.svg" alt="Users" class="h-full">
                   </div>
-                  <h2 class="text-xl font-medium text-center text-stone-700 pt-4">Users</h2>
+                  <h2 class="text-xl font-medium text-center text-stone-700 pt-4">အသုံးပြုသူ</h2>
               </div>
 
           </div>
-
+         <input type="hidden" name="role" class="role" value="1" required>
           <div class="max-w-xl mx-auto text-center space-y-8">
               <p class="text-stone-500 tracking-wide">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, similique!
               </p>
               <div class="max-w-xs mx-auto">
-                  <button class="btn-continue">Continue</button>
+                  <button  type="submit" class="btn-continue">Continue</button>
               </div>
           </div>
+        </form>
       </div>
     </section>
     {{-- <div class="container w-100 m-auto my-5 shadow-lg rounded-2" style="max-width:700px;">
