@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Paginator::useBootstrapFive();
+        Paginator::useTailwind();
         if (!app()->environment('local')) {
             // URL::forceScheme('https');
             $this->app['request']->server->set('HTTPS', 'on');
