@@ -24,7 +24,10 @@ class Order extends Model
         'weightfee'
     ];
     protected $with = ['user', 'category', 'sourceArea', 'shop', 'gate'];
-
+    public function getCategoryNameAttribute()
+    {
+        return $this->category['name'] ?? 'N/A';
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

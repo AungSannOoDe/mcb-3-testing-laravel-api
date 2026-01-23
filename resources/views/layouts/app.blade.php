@@ -15,6 +15,7 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.4/dist/cdn.min.js"></script>
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -22,7 +23,6 @@
 <body>
     <div id="app" class="d-flex flex-column min-vh-100">
         <header class="sticky top-0 z-50 h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 w-full px-6 md:px-18 flex items-center justify-between">
-
             {{-- Logo --}}
             <div class="flex items-center gap-3">
                 <img src="{{ asset('images/logo1.png') }}" alt="" class="h-10">
@@ -118,7 +118,6 @@
             </div>
 
         </header>
-
         {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}" style="font-style:italic">
@@ -204,12 +203,9 @@
                 </div>
             </div>
         </nav> --}}
-
         <main class="flex-grow-1 py-4">
             @yield('content')
         </main>
-
-
     </div>
     <footer class="bg-white border-t border-slate-200 pt-20 pb-10 px-6">
         <div class="max-w-7xl mx-auto">
