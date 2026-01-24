@@ -108,21 +108,22 @@
 
             <div class="md:w-1/2 space-y-6">
                 <h2 class="text-4xl font-bold text-white">
-                    Efficiency at Every Stop
+                   Warning 
                 </h2>
 
                 <ul class="space-y-4">
                     <li class="flex items-center gap-3 text-slate-300">
                         <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs">✓</span>
-                        Real-time synchronization between branches.
+                        တင်ပို့ကုန်အချက်လက်များကိုမှန်ကန်တိကျစွာဖြည့်ပါ
+                        
                     </li>
                     <li class="flex items-center gap-3 text-slate-300">
                         <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs">✓</span>
-                        Offline mode for poor connectivity.
+                        ပြီးနောက် ထည့်သွင်းပြီးအချက်လက်များကိုပြန်လည်စစ်ဆေး
                     </li>
                     <li class="flex items-center gap-3 text-slate-300">
                         <span class="w-6 h-6 bg-indigo-500 rounded-full flex items-center justify-center text-white text-xs">✓</span>
-                        Multi-user access control.
+                        မှားယွင်းမှုရှိပါက ပြန်လည်ပြင်ဆင်နိုင်သည်
                     </li>
                 </ul>
 
