@@ -2,95 +2,68 @@
 
 @section("title", "Orders")
 @section("content")
-<div class="container mb-5">
-    @if(isset($orders))
-    <form action="{{ route('orders.export') }}" method="post">
-        @csrf
-        <input type="hidden" name="orders" value="{{ base64_encode(json_encode($orders)) }}">
-        <button class="btn btn-success" type="submit">Export All</button>
-    </form>
-    @endif
-    @if(auth()->user()->id == 2)
-    <div class="row filterBox">
-        <div class="col-12 col-md-4">
-            <x-status-dropdown></x-status-dropdown>
-        </div>
-        <form action="{{ url('/orders/') }}" method="get" class="col-12 col-md-8">
-            @if(request('status'))
-            <input type="hidden" name="status" value="{{request('status')}}">
-            @endif
-            <div class="row">
-            <div class="col-12 col-md-5 mt-md-3 mb-3">
-                <label for="fromDate" class="form-label">From Date</label>
-                <input type="date" id="fromDate" name="from_date"
-                value="{{ request('from_date') }}"
-                class="form-control text-success">
-            </div>
-            <div class="col-12 col-md-5 mt-md-3 mb-3">
-                <label for="toDate" class="form-label">To Date</label>
-                <input type="date" id="toDate" name="to_date"
-                value="{{ request('to_date') }}"
-                class="form-control text-success">
-            </div>
-            <div class="col-12 col-md-2 mb-3">
-                <button type="submit" class="btn btn-outline-info mt-md-5 w-100">
-                    Search
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </div>
-            </div>
-        </form>
+ {{-- <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <p class="text-slate-500 text-sm font-medium">Today's Shipments</p>
+        <h3 class="text-3xl font-bold mt-1">24</h3>
+        <span class="text-emerald-500 text-xs font-bold">+12% from yesterday</span>
     </div>
-    @endif
-    @if(auth()->user()->id == 1)
-    <div class="row filterBox">
-        <div class="col-12 col-md-4">
-            <x-status-dropdown></x-status-dropdown>
-        </div>
-        <form action="{{ url('/user/'.auth()->id().'/orders') }}" method="get" class="col-12 col-md-8">
-            @if(request('status'))
-            <input type="hidden" name="status" value="{{request('status')}}">
-            @endif
-            <div class="row">
-            <div class="col-12 col-md-5 mt-md-3 mb-3">
-                <label for="fromDate" class="form-label">From Date</label>
-                <input type="date" id="fromDate" name="from_date"
-                value="{{ request('from_date') }}"
-                class="form-control text-success">
-            </div>
-            <div class="col-12 col-md-5 mt-md-3 mb-3">
-                <label for="toDate" class="form-label">To Date</label>
-                <input type="date" id="toDate" name="to_date"
-                value="{{ request('to_date') }}"
-                class="form-control text-success">
-            </div>
-            <div class="col-12 col-md-2 mb-3">
-                <button type="submit" class="btn btn-outline-info mt-md-5 w-100">
-                    Search
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </button>
-            </div>
-            </div>
-        </form>
+    <div class="bg-indigo-600 p-6 rounded-3xl shadow-xl text-white">
+        <p class="text-indigo-100 text-sm font-medium">Pending Delivery</p>
+        <h3 class="text-3xl font-bold mt-1">108</h3>
+        <span class="text-indigo-200 text-xs font-bold">Priority: High</span>
     </div>
-    @endif
-
-    @if($orders->isEmpty())
-    <div class="empty text-center">
-        <img src="{{ asset('images/empty.gif') }}" alt="empty" style="max-width:250px;">
+    <div class="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+        <p class="text-slate-500 text-sm font-medium">Completed (Month)</p>
+        <h3 class="text-3xl font-bold mt-1">1,420</h3>
+        <span class="text-slate-400 text-xs font-bold">Lashio Warehouse</span>
     </div>
-    <p class="text-center fs-5">လက်တလောတင်ပို့ကုန်များမရှိသေးပါ</p>
-    @else
-    <h3 class="my-3 text-center">တင်ပို့ကုန်စာရင်း</h3>
-    <!-- Order Cards -->
-    @foreach($orders as $order)
-    <x-orderCard :order="$order" />
-    @endforeach
-    @endif
+</div> --}}
+ @if(isset($orders))
+<form action="{{ route('orders.export') }}" method="post">
+    @csrf
+    <input type="hidden" name="orders" value="{{ base64_encode(json_encode($orders)) }}">
+    <button class="bg-emerald-600 hover:bg-emerald-700 ml-3 text-white px-8 py-3 rounded-xl font-bold transition" type="submit">Export All</button>
+</form>
+@endif
+<div class="glass-card p-4 rounded-2xl border border-white shadow-sm flex flex-wrap items-center gap-4 mb-8">
+    <div class="relative flex-grow min-w-[200px]">
+        <span class="absolute inset-y-0 left-3 flex items-center text-slate-400">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </span>
+        <input type="text" placeholder="Search by name, ID or cargo..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition">
+    </div>
+    <input type="date" class="px-4 py-3 border border-slate-200 rounded-xl outline-none text-slate-600">
+    <select class="px-4 py-3 border border-slate-200 rounded-xl outline-none text-slate-600 bg-white">
+        <option>Filter by Status</option>
+        <option value="shipping">Shipping</option>
+        <option value="delivered">Delivered</option>
+    </select>
+    <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold transition">
+        Apply
+    </button>
 </div>
-<div class="d-flex justify-content-center">
+
+<div class="space-y-4">
+    <h2 class="text-xl font-bold text-slate-800 px-2 flex justify-between items-center">
+        တင်ပို့ကုန်စာရင်း
+        <span class="text-sm font-normal text-slate-400 italic">
+            Showing {{ $orders->count() }} records
+        </span>
+    </h2>
+    @forelse($orders as $order)
+        <x-orderCard :order="$order" />
+    @empty
+        <div class="text-center py-12">
+            <p class="text-slate-500 mt-4">လက်တလောတင်ပို့ကုန်များမရှိသေးပါ</p>
+        </div>
+    @endforelse
+</div>
+
+<div class="mt-6 flex justify-center">
     {{ $orders->links() }}
 </div>
-</div>
+
+ <!-- #region -->
 <!--order css-->
 @endsection

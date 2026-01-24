@@ -15,13 +15,91 @@
     <link rel="dns-prefetch" href="//fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.15.4/dist/cdn.min.js"></script>
     <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
 <body>
     <div id="app" class="d-flex flex-column min-vh-100">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+        <header class="sticky top-0 z-50 h-20 bg-white/80 backdrop-blur-md border-b border-slate-200 w-full px-6 md:px-18 flex items-center justify-between">
+            {{-- Logo --}}
+            <div class="flex items-center gap-3">
+                <img src="{{ asset('images/logo1.png') }}" alt="" class="h-10">
+                <h1 class="text-xl font-bold italic">
+                    <span class="text-green-600">Shipping</span>
+                    <span class="text-indigo-600">Record</span>
+                </h1>
+            </div>
+
+            {{-- Navigation --}}
+            <nav class="hidden md:flex">
+                <ul class="flex items-center gap-6 font-medium text-slate-600">
+                    @auth
+                        @if(auth()->user()->role_id == 1)
+                            <li><a href="{{ url('/order/add') }}" class="hover:text-indigo-600 transition">တင်ပို့ကုန်ထည့်သွင်းရန်</a></li>
+                            <li><a href="{{ url('/user/'.auth()->user()->id.'/orders') }}" class="hover:text-indigo-600 transition">အချက်လက်ကြည့်ရန်</a></li>
+                        @endif
+
+                        @if(auth()->user()->role_id == 2)
+                            <li><a href="{{ url('/orders') }}" class="hover:text-indigo-600 transition">ပို့ကုန်စာရင်းကြည့်ရန်</a></li>
+                            <li><a href="{{ url('/facts/add') }}" class="hover:text-indigo-600 transition">အချက်လက်ထည့်သွင်းရန်</a></li>
+
+                            {{-- Data Dropdown (Removed Dots/Discs) --}}
+                            <li class="relative" x-data="{ open: false }" @mouseenter="open = true" @mouseleave="open = false">
+                                <button class="cursor-pointer hover:text-indigo-600 transition flex items-center gap-1 py-4">
+                                    အချက်အလက်ကြည့်ရန်
+                                    <svg class="w-4 h-4 transition-transform duration-200" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                                    </svg>
+                                </button>
+
+                                {{-- Dropdown Menu --}}
+                                <div x-show="open"
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 translate-y-2"
+                                    x-transition:enter-end="opacity-100 translate-y-0"
+                                    class="absolute left-0 top-[85%] w-56 bg-white shadow-2xl rounded-2xl border border-slate-100 py-2 z-[100]"
+                                    style="display: none;">
+
+                                    {{-- No more discs/dots here --}}
+                                    <a href="{{ url('/categories') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ကုန်ပစ္စည်းအမျိုးအစားများ</a>
+                                    <a href="{{ url('/products') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ကုန်အမည်များ</a>
+                                    <a href="{{ url('/sourceareas') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ပွဲရုံများ</a>
+                                    <a href="{{ url('/gates') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">တင်ပို့ဂိတ်များ</a>
+                                    <a href="{{ url('/shops') }}" class="block px-5 py-2.5 text-sm text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition">ဆိုင်များ</a>
+                                </div>
+                            </li>
+                        @endif
+                    @endauth
+                </ul>
+            </nav>
+
+            {{-- Right Side --}}
+            <div class="flex items-center gap-4">
+                @guest
+                    <a href="{{ route('login') }}" class="text-slate-600 font-medium hover:text-indigo-600 transition">Login</a>
+                    <a href="{{ route('register') }}" class="bg-indigo-600 text-white px-5 py-2 rounded-full font-medium hover:bg-indigo-700 transition shadow-lg shadow-indigo-100">Register</a>
+                @else
+                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
+                        <button @click="open = !open" class="flex items-center gap-2 px-3 py-1.5 bg-slate-50 rounded-xl hover:bg-indigo-50 transition">
+                            <span class="font-bold text-indigo-600 text-sm">{{ Auth::user()->name }}</span>
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" /></svg>
+                        </button>
+
+                        <div x-show="open" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 py-2 z-[100]" style="display: none;">
+                            <a href="{{ url('change-password') }}" class="block px-4 py-2 hover:bg-indigo-50 text-slate-600 text-sm">စကားဝှက်ပြောင်းရန်</a>
+                            <hr class="my-1 border-slate-50">
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm font-bold">ထွက်ရန်</button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
+            </div>
+        </header>
+        {{-- <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
                 <a class="navbar-brand" href="{{ url('/home') }}" style="font-style:italic">
                     <img src="{{ asset('images/logo1.png') }}" alt="" style="max-height:40px;">
@@ -105,18 +183,44 @@
                     </ul>
                 </div>
             </div>
-        </nav>
-
+        </nav> --}}
         <main class="flex-grow-1 py-4">
             @yield('content')
         </main>
-        <footer class="text-center py-2 px-2 mt-lg-5" style="background: rgba(28, 1, 56, 1);color: #fff;">
-            <p style="font-size: 1.2em;" class="pt-2">
-                &copy; 2025 Yangon-Lashio Shipping Record System. All rights reserved
-            </p>
-        </footer>
     </div>
-
+    <footer class="bg-white border-t border-slate-200 pt-20 pb-10 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="md:col-span-2 space-y-6">
+                    <h3 class="text-2xl font-bold">Yangon–Lashio Shipping</h3>
+                    <p class="text-slate-500 max-w-sm leading-relaxed">
+                        Redefining logistics in Myanmar with technology-driven solutions for retail and wholesale businesses.
+                    </p>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Product</h4>
+                    <ul class="text-slate-500 space-y-2">
+                        <li>Features</li>
+                        <li>Pricing</li>
+                        <li>Integrations</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold mb-4">Support</h4>
+                    <ul class="text-slate-500 space-y-2">
+                        <li>Help Center</li>
+                        <li>Contact Us</li>
+                        <li>Terms of Service</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-slate-400 text-sm">2026 &copy; Yangon–Lashio Shipping Record System. All rights reserved.</p>
+                <div class="flex gap-6 grayscale opacity-50">
+                    </div>
+            </div>
+        </div>
+    </footer>
 </body>
 
 </html>

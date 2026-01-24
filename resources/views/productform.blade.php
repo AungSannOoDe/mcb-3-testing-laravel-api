@@ -2,135 +2,153 @@
 
 @section('title', 'Product Form')
 @section('content')
-<div class="container w-100 m-auto" style="max-width: 800px">
-    <h2 class="text-center py-3">တင်ပို့ကုန်အချက်လက်များကိုမှန်ကန်စွာထည့်သွင်းပါ</h2>
-
-    {{-- Show Modal for Success or Error --}}
-    @if(session('success') || session('error'))
-    <x-modal>
-        <p class="text-center" style="font-size:2.5em;">
-            @if(session('success'))
-                <i class="fa-solid fa-circle-check text-success"></i>
-            @else
-                <i class="fa-solid fa-triangle-exclamation text-warning"></i>
-            @endif
-        </p>
-        <p class="{{ session('success') ? 'text-success' : 'text-warning' }} text-center" style="font-size:1.2em;">
-            {{ session('success') ?? session('error') }}
-        </p>
-    </x-modal>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const btn = document.querySelector('.modalBtn');
-            if (btn) btn.click();
-        });
-    </script>
-    @endif
-
-    <form class="row justify-content-center g-3" action="{{ url('order/add') }}" method="POST">
-        @csrf
-
-        <div class="col-md-6">
-            <label for="exportDate" class="form-label">တင်ပို့သည့်ရက်စွဲ</label>
-            <input type="date" name="export_date" class="form-control" id="exportDate" required>
+<div class="mx-auto w-full max-w-4xl p-2 sm:p-6">
+    <div class="bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
+        <div class="bg-gradient-to-r from-green-600 to-emerald-500 p-6">
+            <h2 class="text-center text-2xl font-bold text-white tracking-wide">
+                တင်ပို့ကုန်အချက်လက်များကိုမှန်ကန်စွာထည့်သွင်းပါ
+            </h2>
         </div>
 
-        <div class="col-md-6">
-            <label for="sourceArea" class="form-label">ပွဲရုံ</label>
-            <select name="source_area_id" id="sourceArea" class="form-select" required>
-                <option value="">ပွဲရုံအမည်ရွေးပါ</option>
-                @foreach($areas as $area)
-                    <option value="{{ $area->id }}">{{ $area->name }}</option>
-                @endforeach
-            </select>
-        </div>
+        {{-- Success/Error Modal Logic --}}
+        @if(session('success') || session('error'))
+        <x-modal>
+            <div class="p-6 text-center">
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full {{ session('success') ? 'bg-green-100' : 'bg-red-100' }} mb-4">
+                    @if(session('success'))
+                        <i class="fa-solid fa-check text-2xl text-green-600"></i>
+                    @else
+                        <i class="fa-solid fa-xmark text-2xl text-red-600"></i>
+                    @endif
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">
+                    {{ session('success') ? 'အောင်မြင်ပါသည်။' : 'မှားယွင်းနေပါသည်။' }}
+                </h3>
+                <p class="text-gray-500">{{ session('success') ?? session('error') }}</p>
+            </div>
+        </x-modal>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => document.querySelector('.modalBtn')?.click());
+        </script>
+        @endif
 
-        <div class="col-md-12">
-            <label for="category" class="form-label">ကုန်အမျိုးအစား</label>
-            <select name="category_id" id="category" class="form-select" required>
-                <option value="">ကုန်အမျိုးအစားရွေးပါ</option>
-                @foreach($categories as $category)
-                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                @endforeach
-            </select>
-        </div>
+        <form class="p-6 sm:p-8" action="{{ url('order/add') }}" method="POST">
+            @csrf
 
-        <div class="col-md-12">
-            <label for="product" class="form-label">ကုန်အမည်</label>
-            <select name="product" id="product" class="form-select" required>
-                <option value="">ကုန်အမည်ရွေးပါ</option>
-            </select>
-        </div>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-x-6 gap-y-5">
+                
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">တင်ပို့သည့်ရက်စွဲ</label>
+                    <input type="date" name="export_date" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                </div>
 
-        <div class="col-md-6">
-            <label for="weight" class="form-label">အတိုက်ချိန် (ပိဿာ.ကျပ်သား)</label>
-            <input type="text" name="weight" id="weight" class="form-control" placeholder="ဥပမာ 50.50" required>
-        </div>
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ပွဲရုံ</label>
+                    <select name="source_area_id" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                        <option value="">ပွဲရုံအမည်ရွေးပါ</option>
+                        @foreach($areas as $area)
+                            <option value="{{ $area->id }}">{{ $area->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="col-md-6">
-            <label for="netweight" class="form-label">အသားချိန် (ပိဿာ.ကျပ်သား)</label>
-            <input type="text" name="netweight" id="netweight" class="form-control" placeholder="ဥပမာ 50.50" required>
-        </div>
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ကုန်အမျိုးအစား</label>
+                    <select name="category_id" id="category" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                        <option value="">ရွေးချယ်ရန်</option>
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="col-md-6">
-            <label for="unit" class="form-label">ယူနစ်</label>
-            <select name="unit" id="unit" class="form-select" required>
-                <option value="">ယူနစ်ရွေးပါ</option>
-                <option value="ခြင်း">ခြင်း</option>
-                <option value="အိတ်">အိတ်</option>
-                <option value="‌ေဖာ့ဘူး">‌ေဖာ့ဘူး</option>
-            </select>
-        </div>
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ကုန်အမည်</label>
+                    <select name="product" id="product" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all">
+                        <option value="">အရင်အမျိုးအစားရွေးပါ</option>
+                    </select>
+                </div>
 
-        <div class="col-md-6">
-            <label for="price" class="form-label">စျေးနှုန်း (၁ ပိဿာ)</label>
-            <input type="text" name="price" id="price" class="form-control" value="0" required>
-        </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">အတိုက်ချိန် (ပိဿာ)</label>
+                    <input type="number" step="0.01" name="weight" id="weight" placeholder="0.00" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                </div>
 
-        <div class="col-md-6">
-            <label for="total" class="form-label">စုစုပေါင်းကျသင့်ငွေ</label>
-            <input type="text" name="total" id="total" class="form-control" value="0" readonly>
-        </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">အသားချိန် (ပိဿာ)</label>
+                    <input type="number" step="0.01" name="netweight" id="netweight" placeholder="0.00" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                </div>
 
-        <div class="col-md-6">
-            <label for="status" class="form-label">ကုန်ပစ္စည်းအခြေနေ</label>
-            <select name="status" id="status" class="form-select" required>
-                <option value="ပို့နေဆဲ">ပို့နေဆဲ</option>
-                <option value="ရောက်ပြီး">ရောက်ပြီး</option>
-                <option value="ရောင်းပြီး">ရောင်းပြီး</option>
-            </select>
-        </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ယူနစ်</label>
+                    <select name="unit" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <option value="ခြင်း">ခြင်း</option>
+                        <option value="အိတ်">အိတ်</option>
+                        <option value="‌ေဖာ့ဘူး">‌ေဖာ့ဘူး</option>
+                    </select>
+                </div>
 
-        <div class="col-md-6">
-            <label for="referto" class="form-label">Refer To</label>
-            <select name="shop_id" id="referto" class="form-select">
-                <option value="">ထပ်မံပို့စေချင်သောဆိုင်အမည်ရှိပါကရွေးပါ</option>
-                @foreach($shops as $shop)
-                    <option value="{{ $shop->id }}">{{ $shop->name }}</option>
-                @endforeach
-            </select>
-        </div>
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">စျေးနှုန်း (၁ ပိဿာ)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">Ks</span>
+                        <input type="number" name="price" id="price" value="0" required
+                            class="w-full pl-10 rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                    </div>
+                </div>
 
-        <div class="col-md-6">
-            <label for="gate" class="form-label">ဂိတ်</label>
-            <select name="gate_id" id="gate" class="form-select" required>
-                @foreach($gates as $gate)
-                    <option value="{{ $gate->id }}">{{ $gate->name }}</option>
-                @endforeach
-            </select>
-        </div>
+                <div class="md:col-span-4">
+                    <label class="block text-sm font-semibold text-emerald-700 mb-1">စုစုပေါင်းကျသင့်ငွေ</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-emerald-600 font-bold">Ks</span>
+                        <input type="text" id="total" name="total" value="0" readonly
+                            class="w-full pl-10 bg-emerald-50 border-emerald-200 text-emerald-700 font-bold rounded-lg cursor-not-allowed">
+                    </div>
+                </div>
 
-        <div class="col-md-12">
-            <label for="weight_price" class="form-label">တန်ဆာခ</label>
-            <input type="text" name="weight_price" id="weight_price" class="form-control">
-        </div>
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ဂိတ်</label>
+                    <select name="gate_id" required
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        @foreach($gates as $gate)
+                            <option value="{{ $gate->id }}">{{ $gate->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-        <div class="col-12">
-            <button type="submit" class="btn btn-success">တင်မည်</button>
-        </div>
-    </form>
+                <div class="md:col-span-3">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">တန်ဆာခ</label>
+                    <input type="number" name="weight_price" placeholder="0"
+                        class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                </div>
+
+                <div class="md:col-span-6">
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">ပို့ဆောင်မည့်ဆိုင် (Refer To)</label>
+                    <select name="shop_id" class="w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500">
+                        <option value="">ဆိုင်အမည်ရွေးပါ (Optional)</option>
+                        @foreach($shops as $shop)
+                            <option value="{{ $shop->id }}">{{ $shop->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-8">
+                <button type="submit" 
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform transition hover:-translate-y-0.5 active:scale-95">
+                    အချက်အလက်များကို သိမ်းဆည်းမည်
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-
 {{-- jQuery CDN --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 

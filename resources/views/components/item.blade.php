@@ -1,26 +1,39 @@
-@props(['item','delete' => null,'type'])
-<div class="card mb-1 p-2 w-100 m-auto" style="max-width:500px;">
-    <div class="card-body d-flex">
-        <div class="item flex-grow-1">
-            <p class="card-text text-success fw-bold">
-                {{ $item->name }}
-            </p>
+@props(['item', 'type'])
+
+<div x-data="{ editOpen: false, deleteOpen: false }" class="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all mb-4 max-w-2xl mx-auto">
+    <div class="flex items-center justify-between">
+        {{-- Left Side: Icon and Name --}}
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-slate-400">
+                <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <div>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none mb-1">
+                    {{ $type }} Name
+                </p>
+                <h3 class="text-slate-700 font-bold text-lg leading-tight">
+                    {{ $item->name }}
+                </h3>
+            </div>
         </div>
-        <div class="actions d-flex">
-            <span class="edit pe-2">
-                <button type="button" class="border-0 bg-transparent text-info fw-bold" data-bs-toggle="modal" data-bs-target="#editDialog{{$item->id}}">
-                    <i class="fa-regular fa-pen-to-square"></i>
-                </button>
-            </span>
-            @if(!empty($delete))
-            <span class="delete">
-                <button type="submit" class="border-0 bg-transparent text-warning fw-bold" data-bs-toggle="modal" data-bs-target="#deleteDialog{{$item->id}}">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </span>
-            @endif
+
+        {{-- Right Side: Actions --}}
+        <div class="flex items-center gap-2">
+            <button @click="editOpen = true" type="button"
+                class="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition">
+                <i class="fa-regular fa-pen-to-square text-lg"></i>
+            </button>
+
+            <button @click="deleteOpen = true" type="button"
+                class="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                <i class="fa-solid fa-trash-can text-lg"></i>
+            </button>
         </div>
     </div>
+
+    {{-- Tailwind Edit Modal --}}
+    <x-editDialog :item="$item" :type="$type" />
+
+    {{-- Tailwind Delete Modal --}}
+    <x-deleteDialog :item="$item" :type="$type" />
 </div>
-<x-editDialog :item="$item" :type="$type" />
-<x-deleteDialog :item="$item" :type="$type" />

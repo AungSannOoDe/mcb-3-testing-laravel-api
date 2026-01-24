@@ -68,10 +68,14 @@ class OrderController extends Controller
     }
     public function index()
     {
-        $orders = Order::orderBy('status', 'asc')
+        $orders = Order::query()
+            ->orderBy('status', 'asc')
             ->orderBy('created_at', 'desc')
-            ->filter(request(['status', 'from_date', 'to_date']))
-            ->simplePaginate(5);
+            // Ensure your filter scope handles 'search', 'status', and 'date'
+            ->filter(request(['search', 'status', 'from_date', 'to_date']))
+            ->simplePaginate(5)
+           ; // Keeps filters active when clicking 'Next/Previous'
+
         return view('orders', compact('orders'));
     }
     public function show($id)
@@ -162,7 +166,7 @@ class OrderController extends Controller
                 'Source Area',
                 'Category',
                 'Product Name',
-                'Weight', 
+                'Weight',
                 'Net Weight',
                 'Unit',
                 'Price',
