@@ -14,7 +14,7 @@
     </x-modal>
     <!--modal load js-->
     @endif
-    <div class="row justify-content-center">
+    <div class="w-full max-w-sm space-y-10 p-6 z-10">
         <div class="col-md-6">
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white text-center fs-5">
